@@ -1,0 +1,95 @@
+/* If you use it elsewhere */
+.ext-hide { display: none !important; }
+
+/* Hide Steam's built-in review summary UI early to avoid spoiler flash */
+.review_score_summaries,
+.user_reviews_summary_row,
+.rating_summary,
+.responsive_reviewdesc,
+.game_review_summary,
+.user_reviews_count,
+.newmodal_reviews_header,
+.apphub_ReviewsHeader,
+.user_reviews_filter_section,
+.viewer_bar,
+.review_ctn,
+.app_reviews_count,
+.review_summary_count {
+  visibility: hidden !important;
+}
+
+/* Our widget should always be visible (we never hide it via visibility) */
+.ext-steam-guess,
+.ext-steam-guess * {
+  visibility: visible !important;
+}
+
+
+/* Guessing game UI */
+.ext-steam-guess {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  margin: 8px 0;
+}
+
+.ext-steam-guess button {
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 10px;
+  background: rgba(255,255,255,.08);
+  cursor: pointer;
+  font: 600 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #fff;               /* always white text */
+  transition: transform .06s ease, background .15s ease, border-color .15s ease;
+}
+
+.ext-steam-guess button:hover { transform: translateY(-1px); }
+
+/* Keep buttons fully visible even when disabled */
+.ext-steam-guess button[disabled] { opacity: 1; }
+
+/* Result states */
+.ext-steam-guess button.correct {
+  background: #1f6f2a !important;
+  border-color: #1f6f2a !important;
+  color: #fff !important;
+}
+.ext-steam-guess button.wrong {
+  background: #8b1d1d !important;
+  border-color: #8b1d1d !important;
+  color: #fff !important;
+}
+
+.ext-steam-guess .ext-subtle {
+  grid-column: 1/-1;
+  opacity: .8;
+  font-size: 12px;
+}
+
+/* Fallback message styling */
+.ext-steam-guess .ext-error {
+  color: #ffb4b4;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+
+/* Mask everything in the reviews container except our widget */
+.ext-mask-reviews > *:not(.ext-steam-guess) {
+  display: none !important;
+}
+
+/* Waiting message */
+.ext-steam-guess .ext-wait {
+  grid-column: 1/-1;
+  opacity: .9;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Small gap between our two Next Game buttons */
+.ext-next-game + .ext-next-game {
+  margin-left: 8px;
+}

@@ -1,0 +1,41 @@
+{
+  "name": "Review Guesser",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "Turns Steam page into a guessing game.",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://store.steampowered.com/app/*"
+      ],
+      "js": [
+        "src/siteRules.js",
+        "src/utils.js",
+        "src/pageDetection.js",
+        "src/reviewCounts.js",
+        "src/guessingGame.js",
+        "src/nextGame.js",
+        "src/main.js"
+      ],
+      "css": ["content.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": [],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "data/released_appids.csv",
+        "data/Batch_1.csv",
+        "data/Batch_2.csv",
+        "data/Batch_3.csv",
+        "data/Batch_4.csv",
+        "data/Batch_5.csv",
+        "data/Batch_6.csv"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
