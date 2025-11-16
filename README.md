@@ -89,11 +89,9 @@ It is not my plan to work on this too much more so if you'd like to see these li
 
 ---
 
+### Updating the Extension
 
-
-## Updating the Extension
-
-### When You Pull New Changes (Git) or Download a New Version
+#### When You Pull New Changes (Git) or Download a New Version
 
 - If you updated the extension files by:
   - Running `git pull` in the project folder, or
@@ -101,18 +99,18 @@ It is not my plan to work on this too much more so if you'd like to see these li
 
 do the following:
 
-### Step 1: Go to the Extensions Page
+#### Step 1: Go to the Extensions Page
 
 - Open `chrome://extensions/`.
 - Ensure **Developer mode** is still enabled.
 
-### Step 2: Reload the Extension
+#### Step 2: Reload the Extension
 
 - Find **Jonas Review Guesser**.
 - Click the **Reload** button (⟲) on the extension card.
   - This loads the latest version of the source from the folder.
 
-### Step 3: If Something Breaks
+#### Step 3: If Something Breaks
 
 - Disable and re-enable the extension.
 - If issues persist:
@@ -172,6 +170,33 @@ See installation.
 - Click on This Firefox
 - Find **Jonas Review Guesser**.
 - Click **Remove** if you want to uninstall it completely.
+
+
+### Updating the Extension
+
+#### When You Pull New Changes (Git) or Download a New Version
+
+- If you updated the extension files by:
+  - Running `git pull` in the project folder, or
+  - Replacing the folder with a newer version,
+
+do the following:
+
+#### Step 1: Go to the Extensions Page
+
+- Open `about:debugging`.
+- Click on This Firefox
+
+#### Step 2: Reload the Extension
+
+- Find **Jonas Review Guesser**.
+- Click the **Reload** button on the extension card.
+  - This loads the latest version of the source from the folder.
+
+#### Step 3: If Something Breaks
+
+- Click **Remove**.
+- Then click **Load Temporary Add-on...** again and select the `manifest.json` file in the add-on folder again.
 
 ---
 
