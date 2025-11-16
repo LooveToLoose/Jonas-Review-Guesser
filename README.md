@@ -214,7 +214,7 @@ See the license file for more details.
 
 > Will there be a Firefox version?
 
-Only if one of you makes one.
+Only if one of you makes one. This version works well with Firefox, but there are no guarantees.
 
 > Can you add *(insert any feature)* to this extension?
 
