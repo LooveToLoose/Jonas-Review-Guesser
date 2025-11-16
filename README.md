@@ -2,7 +2,10 @@
 
 ## Overview
 
-This is a fork off of Jonas Review Guesser (https://github.com/LooveToLoose/Jonas-Review-Guesser).  More options and filters are available to determine and search for the next random Steam page. 
+This is a fork of Jonas Review Guesser (https://github.com/LooveToLoose/Jonas-Review-Guesser).  Gives both lifetime stats (with the option to clear), as well as current streak.  Gives an additional 'Guess Style' with ranges instead of trying to guess the exact amount. 
+
+<img width="1234" height="700" alt="image" src="https://github.com/user-attachments/assets/8a44dde7-1570-44df-952c-89feb6ad9cf8" />
+
 
 
 Jonas Review Guesser is a Chrome extension that turns Steam into a review guessing game. It hides the review count (and some other clues) on Steam store pages and asks you to guess the number of reviews instead. On top of that, it adds buttons at the top of the page that take you to completely random games on Steam, giving you a new way to browse the store, step outside your usual bubble, and gradually improve your intuition for how successful different games are.
