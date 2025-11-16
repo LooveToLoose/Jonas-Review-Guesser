@@ -8,24 +8,15 @@ Jonas Review Guesser is a Chrome extension that turns Steam into a review guessi
 
 ### Random Game Navigation
 
-- **Next (Raw)**
+- **Next Game Button**
   - Sends you to a completely random Steam game.
-  - Note: because this picks from *all* Steam games, you will often see:
-    - Lower quality games
-    - Shovelware / obscure titles
-- **Next (Balanced)**
-  - Sends you to a random Steam game with a bias toward “better” games.
-  - This can still bring you to any game on Steam but the distribution is more biased towards better games:
-    - Surfaces more recognizable / higher-quality titles more often.
-    - Still maintains some variety so you don’t only see top hits.
 
 ## Limitations
 
 It is a very simple application with many limitations:
-- **Bug: ** Current version only works when your Steam is set to English.
+
+- **Bug:** Current version only works when your Steam is set to English.
 - Somewhat hinders your normal Steam browsing experience (you need to manually turn the Plugin off).
-- The database of appIDs is not automatically updated so the newer titles might not be included.
-- Sometimes the extension brings you to a Steam page that is not or no longer available in your region.
 - Lacking a lot of features that might be cool e.g. filtering by tag, entering the guess into a text field, etc. etc.
 
 It is not my plan to work on this too much more so if you'd like to see these limitations resolved, fork it and do it yourself! I'd be happy to try out your version. :)
@@ -37,9 +28,11 @@ It is not my plan to work on this too much more so if you'd like to see these li
 - **Google Chrome** installed.
 - The extension source code downloaded:
   - Either via `git clone`:
+
     ```bash
     git clone https://github.com/LooveToLoose/Jonas-Review-Guesser
     ```
+
   - Or by downloading a ZIP and extracting it.
 
 ### Step 1: Open Chrome Extensions Page
@@ -56,7 +49,8 @@ It is not my plan to work on this too much more so if you'd like to see these li
   - The folder that includes `manifest.json`.
 - Confirm that **Jonas Review Guesser** appears in the list of extensions.
 
-### Step 3: Set Steam language to ENGLISH!
+### Step 3: Set Steam language to ENGLISH
+
 - **Set your language to "English"!** This is crucial for the current version to work.
 
 ### Step 4: Verify It Works
@@ -65,7 +59,7 @@ It is not my plan to work on this too much more so if you'd like to see these li
 - Open any Steam store page:
   - Check if:
     - Review counts are replaced with guess buttons.
-    - The **Next (Raw)** and **Next (Balanced)** buttons appear at the top of the page.
+    - The **Next Game** button appears at the top of the page.
 
 ---
 
@@ -142,5 +136,4 @@ Okay. Just make it.
 
 > Can you make a YouTube video guessing our Steam games?
 
-Sure, I'll do that on my YT channel (@jonastyroller) and Discord. Sounds like a great idea. 
-
+Sure, I'll do that on my YT channel (@jonastyroller) and Discord. Sounds like a great idea.

@@ -176,6 +176,8 @@
     if (!wrap) {
       wrap = document.createElement("div");
       wrap.className = "ext-steam-guess";
+      wrap.style.marginRight = "8px"
+      wrap.style.marginLeft = "8px"
       wrap.dataset.extAppid = appId;
       const msg = document.createElement("div");
       msg.className = "ext-wait";
