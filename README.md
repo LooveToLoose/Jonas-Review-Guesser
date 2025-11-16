@@ -30,9 +30,12 @@ It is a very simple application with many limitations:
 
 It is not my plan to work on this too much more so if you'd like to see these limitations resolved, fork it and do it yourself! I'd be happy to try out your version. :)
 
-## Installation (Local Chrome Extension)
 
-### Prerequisites
+## Chrome (& Chromium based browsers)
+
+### Installation (Local Chrome Extension)
+
+#### Prerequisites
 
 - **Google Chrome** installed.
 - The extension source code downloaded:
@@ -42,24 +45,24 @@ It is not my plan to work on this too much more so if you'd like to see these li
     ```
   - Or by downloading a ZIP and extracting it.
 
-### Step 1: Open Chrome Extensions Page
+#### Step 1: Open Chrome Extensions Page
 
 - In Chrome, go to:
   - `chrome://extensions/`
 - Enable **Developer mode**:
   - Toggle the **Developer mode** switch in the top-right corner.
 
-### Step 2: Load the Unpacked Extension
+#### Step 2: Load the Unpacked Extension
 
 - Click **“Load unpacked”**.
 - Select the folder containing the extension:
   - The folder that includes `manifest.json`.
 - Confirm that **Jonas Review Guesser** appears in the list of extensions.
 
-### Step 3: Set Steam language to ENGLISH!
+#### Step 3: Set Steam language to ENGLISH!
 - **Set your language to "English"!** This is crucial for the current version to work.
 
-### Step 4: Verify It Works
+#### Step 4: Verify It Works
 
 - Make sure the extension is **enabled** (toggle is on).
 - Open any Steam store page:
@@ -69,15 +72,15 @@ It is not my plan to work on this too much more so if you'd like to see these li
 
 ---
 
-## Enabling / Disabling the Extension
+### Enabling / Disabling the Extension
 
-### Enable
+#### Enable
 
 - Go to `chrome://extensions/`.
 - Find **Jonas Review Guesser**.
 - Ensure the toggle is switched **on**.
 
-### Disable
+#### Disable
 
 - Go to `chrome://extensions/`.
 - Find **Jonas Review Guesser**.
@@ -85,6 +88,8 @@ It is not my plan to work on this too much more so if you'd like to see these li
 - (Optional) Click **Remove** if you want to uninstall it completely.
 
 ---
+
+
 
 ## Updating the Extension
 
@@ -113,6 +118,60 @@ do the following:
 - If issues persist:
   - Click **Remove**.
   - Then click **Load unpacked** again and select the updated folder.
+
+---
+
+## Firefox (& Firefox based browsers)
+
+### Installation (Local Chrome Extension)
+
+#### Prerequisites
+
+- **Firefox** installed.
+- The extension source code downloaded:
+  - Either via `git clone`:
+    ```bash
+    git clone https://github.com/LooveToLoose/Jonas-Review-Guesser
+    ```
+  - Or by downloading a ZIP and extracting it.
+
+#### Step 1: Open Chrome Extensions Page
+
+- In Firefox, go to:
+  - `about:debugging`
+- Click on **“This Firefox”** in the left sidebar
+
+#### Step 2: Load the Unpacked Extension
+
+- Click **“Load Temporary Add-on...”**.
+- Select the folder containing the extension:
+  - Select the file `manifest.json`.
+- Confirm that **Jonas Review Guesser** appears in the list of temporary extensions.
+
+#### Step 3: Set Steam language to ENGLISH!
+- **Set your language to "English"!** This is crucial for the current version to work.
+
+#### Step 4: Verify It Works
+
+- Open any Steam store page:
+  - Check if:
+    - Review counts are replaced with guess buttons.
+    - The **Next (Raw)** and **Next (Balanced)** buttons appear at the top of the page.
+
+---
+
+### Enabling / Disabling the Extension
+
+#### Enable
+
+See installation.
+
+#### Disable
+
+- Go to `about:debugging`.
+- Click on This Firefox
+- Find **Jonas Review Guesser**.
+- Click **Remove** if you want to uninstall it completely.
 
 ---
 
