@@ -198,6 +198,64 @@
     return wrap;
   }
 
+  /**
+   * Gets the score from localStorage.
+   * Returns 0 if not present or not a number.
+   * @returns {number} - The current score.
+   */
+  function GetStorageValueAsInt(key) {
+    const scoreString = localStorage.getItem(key);
+    if (scoreString === null) {
+      return 0;
+    }
+
+    const scoreInt = parseInt(scoreString, 10);
+    return isNaN(scoreInt) ? 0 : scoreInt;
+  }
+
+  /**
+   * Increments the score in localStorage by 1.
+   * If the item doesn't exist, it creates it with a value of 1.
+   */
+  function IncrementStorageValue(key) {
+    let currentScore = GetStorageValueAsInt(key);
+    currentScore++;
+
+    localStorage.setItem(key, currentScore.toString());
+  }
+
+  function incrementScore() {
+    IncrementStorageValue("score");
+  }
+  function incrementTotalTries() {
+    IncrementStorageValue("totalTries");
+  }
+  function getScore() {
+    return GetStorageValueAsInt("score");
+  }
+  function getTotalTries() {
+    return GetStorageValueAsInt("totalTries");
+  }
+
+  function updateScoreDisplay() {
+    let scoreDisplay = document.getElementById("review-guesser-score-display");
+    if (scoreDisplay) {
+      scoreDisplay.textContent = `Score: ${getScore()} / ${getTotalTries()}`;
+    }
+    else {
+      let container = document.querySelector(".apphub_OtherSiteInfo");
+      if(container) {
+        let scoreDisplay = document.createElement("span");
+        scoreDisplay.id = "review-guesser-score-display";
+        scoreDisplay.textContent = `Score: ${getScore()} / ${getTotalTries()}`;
+        container.prepend(scoreDisplay);
+      }
+      else {
+        console.warn("[REVIEW GUESSER] Failed to find apphub_OtherSiteInfo element.");
+      }
+    }
+  }
+
   async function injectSteamGuessingGame() {
     if (!isSteamAppPage()) return;
 
@@ -272,16 +330,23 @@
       const correct = trueCount;
       const mark = (picked) => {
         if (wrap.dataset.locked === "1") return;
+        let wasCorrect = true;
         wrap.dataset.locked = "1";
         btns.forEach((btn) => {
           const val = parseInt(btn.dataset.value, 10);
           if (val === correct) btn.classList.add("correct");
           if (val === picked && val !== correct)
+          {
             btn.classList.add("wrong");
+            wasCorrect = false;
+          }
           btn.disabled = true;
           btn.setAttribute("aria-disabled", "true");
           btn.style.pointerEvents = "none";
         });
+        if(wasCorrect) incrementScore();
+        incrementTotalTries();
+        updateScoreDisplay();
       };
       btns.forEach((b) =>
         b.addEventListener(
@@ -291,6 +356,7 @@
         )
       );
 
+      updateScoreDisplay();
       wrap.dataset.state = "ready";
     }
   }
