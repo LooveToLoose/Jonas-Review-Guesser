@@ -31,7 +31,9 @@
         "data/Batch_3.csv",
         "data/Batch_4.csv",
         "data/Batch_5.csv",
-        "data/Batch_6.csv"
+        "data/Batch_6.csv",
+        "data/tags_index.json",
+        "data/available_tags.json"
       ],
       "matches": [
         "<all_urls>"

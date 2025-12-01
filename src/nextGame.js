@@ -17,6 +17,34 @@
 
   // Simple in-memory cache: path -> Promise<number[]>
   const CSV_CACHE = Object.create(null);
+  
+  // NEW: Tag system caches
+  let TAGS_INDEX = null;
+  let SELECTED_TAGS = new Set();
+  const STORAGE_KEY = 'ext-selected-tags';
+
+  // NEW: Load persisted tags on initialization
+  (function loadSelectedTags() {
+    try {
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const tags = JSON.parse(saved);
+        SELECTED_TAGS = new Set(tags);
+        console.log("[ext] Loaded saved tags:", Array.from(SELECTED_TAGS));
+      }
+    } catch (e) {
+      console.warn("[ext] Failed to load saved tags:", e);
+    }
+  })();
+
+  // NEW: Save tags to sessionStorage
+  function saveSelectedTags() {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(SELECTED_TAGS)));
+    } catch (e) {
+      console.warn("[ext] Failed to save tags:", e);
+    }
+  }
 
   /**
    * Load a CSV file and parse it into an array of app IDs (numbers).
@@ -67,6 +95,44 @@
     return loadCsvIds("data/released_appids.csv");
   }
 
+  // NEW: Load tags index JSON
+  async function loadTagsIndex() {
+    if (TAGS_INDEX) return TAGS_INDEX;
+
+    const url = chrome.runtime.getURL("data/tags_index.json");
+    
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Tags index fetch failed");
+      TAGS_INDEX = await response.json();
+      console.log("[ext] Loaded tags index:", Object.keys(TAGS_INDEX).length, "tags");
+      return TAGS_INDEX;
+    } catch (err) {
+      console.warn("[ext] failed to load tags index", err);
+      return {};
+    }
+  }
+
+  // NEW: Filter app IDs by selected tags (AND logic)
+  async function filterByTags(appIds) {
+    if (SELECTED_TAGS.size === 0) return appIds;
+
+    const tagsIndex = await loadTagsIndex();
+    const tagSets = Array.from(SELECTED_TAGS).map(tag => {
+      const tagAppIds = tagsIndex[tag] || [];
+      return new Set(tagAppIds);
+    });
+    
+    if (tagSets.length === 0) return appIds;
+    
+    const filtered = appIds.filter(appId => {
+      return tagSets.every(tagSet => tagSet.has(appId));
+    });
+    
+    console.log(`[ext] Filtered ${appIds.length} apps → ${filtered.length} apps with tags:`, Array.from(SELECTED_TAGS));
+    return filtered;
+  }
+
   /**
    * Helper to pick a random element from an array of app IDs.
    *
@@ -81,12 +147,20 @@
 
   /**
    * "Pure Random" strategy: pick from the global released_appids list.
+   * MODIFIED: Now applies tag filtering
    *
    * @returns {Promise<number|null>}
    */
   async function getPureRandomAppId() {
     const ids = await getReleasedAppIds();
-    return pickRandomId(ids);
+    const filtered = await filterByTags(ids); // NEW: Apply tag filter
+    
+    if (filtered.length === 0) {
+      console.warn("[ext] No games found with selected tags, using unfiltered");
+      return pickRandomId(ids);
+    }
+    
+    return pickRandomId(filtered);
   }
 
   /**
@@ -95,6 +169,7 @@
    *   - load IDs from that file
    *   - pick a random app id from that batch
    *   - if anything goes wrong / empty → fall back to Pure Random
+   * MODIFIED: Now applies tag filtering
    *
    * @returns {Promise<number|null>}
    */
@@ -104,11 +179,15 @@
     const file =
       BATCH_FILES[Math.floor(Math.random() * BATCH_FILES.length)];
     const ids = await loadCsvIds(file);
-    const id = pickRandomId(ids);
+    const filtered = await filterByTags(ids); // NEW: Apply tag filter
 
-    if (id != null) return id;
+    if (filtered.length > 0) {
+      console.log(`[ext] Smart random from ${file}: ${filtered.length} matches`);
+      return pickRandomId(filtered);
+    }
 
     // Fallback to Pure Random if this batch is empty or failed
+    console.log(`[ext] No matches in batch, falling back to Pure Random`);
     return getPureRandomAppId();
   }
 
@@ -165,6 +244,74 @@
     return a;
   }
 
+  // NEW: Create tag filter UI
+  function createTagFilterUI() {
+    const container = document.createElement("div");
+    container.className = "ext-tag-filter";
+    container.style.cssText = `
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+    `;
+
+    const label = document.createElement("label");
+    label.textContent = "Filter by tags (comma-separated): ";
+    label.style.cssText = `
+      font-size: 12px;
+      color: #c6d4df;
+      margin-right: 8px;
+    `;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "e.g. Action, RPG, Indie";
+    input.className = "ext-tag-input";
+    input.style.cssText = `
+      padding: 6px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.5);
+      color: #c6d4df;
+      font-size: 12px;
+      width: 250px;
+      font-family: Arial, sans-serif;
+    `;
+
+    // Restore saved tags
+    if (SELECTED_TAGS.size > 0) {
+      input.value = Array.from(SELECTED_TAGS).join(', ');
+    }
+
+    // Update tags on input
+    input.addEventListener("input", (e) => {
+      const value = e.target.value.trim();
+      SELECTED_TAGS.clear();
+      
+      if (value) {
+        const tags = value.split(',').map(t => t.trim()).filter(t => t);
+        tags.forEach(tag => SELECTED_TAGS.add(tag));
+      }
+      
+      saveSelectedTags();
+      console.log("[ext] Selected tags:", Array.from(SELECTED_TAGS));
+    });
+
+    container.appendChild(label);
+    container.appendChild(input);
+
+    const hint = document.createElement("div");
+    hint.textContent = "Common tags: Action, Adventure, RPG, Strategy, Indie, Horror, Multiplayer";
+    hint.style.cssText = `
+      font-size: 10px;
+      color: #8f98a0;
+      margin-top: 4px;
+    `;
+    container.appendChild(hint);
+
+    return container;
+  }
+
   // ---------------------------------------------------------------------------
   // Oops / region-locked page: header button(s)
   // ---------------------------------------------------------------------------
@@ -197,6 +344,14 @@
     } else {
       header.appendChild(row);
     }
+
+    // NEW: Add tag filter UI below buttons
+    const tagUI = createTagFilterUI();
+    if (target && target.parentElement) {
+      row.insertAdjacentElement("afterend", tagUI);
+    } else {
+      header.appendChild(tagUI);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -224,6 +379,10 @@
     // Let Steam's layout handle positioning; just drop them in order
     container.appendChild(pureBtn);
     container.appendChild(smartBtn);
+
+    // NEW: Add tag filter UI below buttons
+    const tagUI = createTagFilterUI();
+    container.appendChild(tagUI);
   }
 
   // Expose on namespace

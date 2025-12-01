@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "process-data": "node process_steam_data_stream.js"
+  },
+  "devDependencies": {
+    "stream-json": "^1.9.1"
+  }
+}
