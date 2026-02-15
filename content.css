@@ -16,12 +16,43 @@
 .app_reviews_count,
 .review_summary_count {
   visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* Our widget should always be visible (we never hide it via visibility) */
 .ext-steam-guess,
 .ext-steam-guess * {
   visibility: visible !important;
+}
+
+/* Review summary shown after guessing */
+.ext-review-reveal {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+}
+.ext-review-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  line-height: 1.6;
+  font-size: 11px;
+}
+.ext-review-label {
+  text-transform: uppercase;
+  color: #556772;
+  white-space: nowrap;
+  min-width: 120px;
+}
+.ext-review-value {
+  color: #c6d4df;
+}
+.ext-review-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+.ext-review-link:hover {
+  filter: brightness(1.3);
+  text-decoration: underline;
 }
 
 
@@ -75,6 +106,33 @@
   font-size: 13px;
 }
 
+
+/*
+ * After guessing, clicking the sentiment link adds .ext-game-over to <html>.
+ * This disables ALL plugin hiding so Steam's native layout takes over.
+ */
+html.ext-game-over .ext-hide {
+  display: unset !important;
+}
+html.ext-game-over .ext-mask-reviews > *:not(.ext-steam-guess) {
+  display: unset !important;
+}
+html.ext-game-over .review_score_summaries,
+html.ext-game-over .user_reviews_summary_row,
+html.ext-game-over .rating_summary,
+html.ext-game-over .responsive_reviewdesc,
+html.ext-game-over .game_review_summary,
+html.ext-game-over .user_reviews_count,
+html.ext-game-over .newmodal_reviews_header,
+html.ext-game-over .apphub_ReviewsHeader,
+html.ext-game-over .user_reviews_filter_section,
+html.ext-game-over .viewer_bar,
+html.ext-game-over .review_ctn,
+html.ext-game-over .app_reviews_count,
+html.ext-game-over .review_summary_count {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
 
 /* Mask everything in the reviews container except our widget */
 .ext-mask-reviews > *:not(.ext-steam-guess) {

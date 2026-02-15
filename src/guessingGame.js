@@ -198,6 +198,120 @@
     return wrap;
   }
 
+  /**
+   * Extract review summary data from (hidden) Steam DOM elements
+   * and build our own compact display inside the guess widget.
+   */
+  function revealReviewSummary(wrap) {
+    if (wrap.querySelector(".ext-review-reveal")) return;
+
+    const seen = new Set();
+    const entries = [];
+
+    document.querySelectorAll(".user_reviews_summary_row").forEach((row) => {
+      const subtitleEl = row.querySelector(".subtitle");
+      const summaryEl = row.querySelector(".game_review_summary");
+      if (!subtitleEl || !summaryEl) return;
+
+      const subtitle = subtitleEl.textContent.trim().replace(/:$/, "");
+      // Normalise key for dedup (e.g. "Recent Reviews" / "All Reviews")
+      const key = subtitle.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const label = summaryEl.textContent.trim();
+      if (!label) return;
+
+      // Try tooltip first — it has the "XX% of N … are positive" string
+      const tooltip = summaryEl.getAttribute("data-tooltip-html") || "";
+
+      // Also check the sibling .responsive_reviewdesc for the same info
+      const descEl = row.querySelector(".responsive_reviewdesc");
+      const descText = descEl ? descEl.textContent : "";
+      const source = tooltip || descText || "";
+
+      const pctMatch = source.match(/(\d+)%/);
+      const countMatch = source.match(/([\d,.\u00A0\s]+)\s*user\s*reviews?/i);
+
+      let extra = "";
+      if (countMatch) {
+        const num = countMatch[1].replace(/[\s,.\u00A0]/g, "");
+        extra += " (" + formatNum(parseInt(num, 10)) + ")";
+      }
+      if (pctMatch) {
+        extra += " \u2014 " + pctMatch[1] + "% positive";
+      }
+
+      // Determine sentiment color (matches Steam's palette)
+      const lw = label.toLowerCase();
+      let sentimentColor;
+      if (/\bnegative\b/.test(lw) && !/mostly/.test(lw)) {
+        sentimentColor = "#A34C25";          // Negative / Very Negative / Overwhelmingly Negative
+      } else if (/mostly negative/.test(lw)) {
+        sentimentColor = "#C35C2C";          // Mostly Negative
+      } else if (/\bmixed\b/.test(lw)) {
+        sentimentColor = "#B9A074";          // Mixed
+      } else {
+        sentimentColor = "#66C0F4";          // Positive variants
+      }
+
+      entries.push({ subtitle, label, extra, sentimentColor });
+    });
+
+    if (!entries.length) return;
+
+    const reveal = document.createElement("div");
+    reveal.className = "ext-review-reveal";
+
+    const appId = getCurrentSteamAppId();
+    const reviewsUrl = appId
+      ? "https://store.steampowered.com/app/" + appId + "/#app_reviews_hash"
+      : null;
+
+    entries.forEach((e) => {
+      const line = document.createElement("div");
+      line.className = "ext-review-line";
+
+      const lbl = document.createElement("span");
+      lbl.className = "ext-review-label";
+      lbl.textContent = e.subtitle + ":";
+
+      const val = document.createElement("span");
+      val.className = "ext-review-value";
+
+      const link = document.createElement("a");
+      link.className = "ext-review-link";
+      link.href = reviewsUrl || "#app_reviews_hash";
+      link.textContent = e.label;
+      link.style.color = e.sentimentColor;
+      link.addEventListener("click", (ev) => {
+        ev.preventDefault();
+
+        // Flip a single class on <html> that disables ALL plugin hiding
+        document.documentElement.classList.add("ext-game-over");
+
+        // Scroll to the reviews section
+        const target =
+          document.getElementById("app_reviews_hash") ||
+          document.querySelector(".review_ctn");
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+      val.appendChild(link);
+
+      if (e.extra) {
+        val.appendChild(document.createTextNode(e.extra));
+      }
+
+      line.appendChild(lbl);
+      line.appendChild(val);
+      reveal.appendChild(line);
+    });
+
+    wrap.appendChild(reveal);
+  }
+
   async function injectSteamGuessingGame() {
     if (!isSteamAppPage()) return;
 
@@ -282,6 +396,9 @@
           btn.setAttribute("aria-disabled", "true");
           btn.style.pointerEvents = "none";
         });
+
+        // Reveal the review summary after guessing
+        revealReviewSummary(wrap);
       };
       btns.forEach((b) =>
         b.addEventListener(
