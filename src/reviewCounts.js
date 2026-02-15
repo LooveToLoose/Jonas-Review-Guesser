@@ -10,6 +10,9 @@
     // When running at document_start, body may not exist yet.
     if (!document.body) return;
 
+    // If the user already revealed reviews, stop hiding anything.
+    if (document.documentElement.classList.contains("ext-game-over")) return;
+
     const isInOverallSummary = (el) =>
       !!el.closest(".review_summary_ctn.overall_summary_ctn");
 
@@ -39,6 +42,7 @@
     selectors.forEach((sel) => {
       document.querySelectorAll(sel).forEach((el) => {
         if (isInOverallSummary(el)) return;
+        if (el.classList.contains("ext-revealed")) return;
         if (!el.closest(".ext-steam-guess")) el.classList.add("ext-hide");
       });
     });
@@ -63,7 +67,7 @@
     let node;
     while ((node = walker.nextNode())) {
       const el = node.parentElement;
-      if (el && !el.closest(".ext-steam-guess"))
+      if (el && !el.closest(".ext-steam-guess") && !el.classList.contains("ext-revealed"))
         el.classList.add("ext-hide");
     }
 

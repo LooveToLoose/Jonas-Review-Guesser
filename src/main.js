@@ -16,6 +16,11 @@
     ns.injectSteamGuessingGame && ns.injectSteamGuessingGame();
   }
 
+  // If the page was opened with #app_reviews_hash, skip all hiding
+  if (location.hash === "#app_reviews_hash") {
+    document.documentElement.classList.add("ext-game-over");
+  }
+
   // Initial run
   run();
 
