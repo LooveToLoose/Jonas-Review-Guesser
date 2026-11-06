@@ -69,6 +69,9 @@
 
     // --- EXTRA SPOILER HIDES --------------------------------------------------
 
+    const spoilerLevel = ns.settings?.spoilerLevel || "standard";
+    if (spoilerLevel === "standard") return;
+
     // 1) Publisher row (e.g. "Publisher: Benedict Jaeggi")
     document.querySelectorAll(".dev_row").forEach((row) => {
       const labelEl = row.querySelector(".subtitle");
@@ -129,6 +132,20 @@
     if (friendBlock) {
       friendBlock.classList.add("ext-hide");
     }
+
+    if (spoilerLevel === "brutal") {
+      document
+        .querySelectorAll(`
+          .release_date,
+          .dev_row,
+          .glance_tags,
+          .game_purchase_price,
+          .discount_prices,
+          .game_area_details_specs,
+          .details_block
+        `)
+        .forEach((element) => element.classList.add("ext-hide"));
+    }
   }
 
 
@@ -139,6 +156,52 @@
     if (!el) return null;
     const c = parseReviewCountRaw(el.textContent);
     return c != null ? { el, count: c } : null;
+  }
+
+  /**
+   * Steam's current reviews UI is rendered by React. The all-language totals
+   * are shipped in JSON on the appreviews mount point before that UI renders,
+   * so prefer this stable source over scraping translated, visible text.
+   */
+  function tryGetFromAppReviewsProps(scope = document) {
+    const mounts = scope.querySelectorAll(
+      '[data-featuretarget="appreviews"][data-props]'
+    );
+
+    for (const el of mounts) {
+      let props;
+      try {
+        props = JSON.parse(el.getAttribute("data-props") || "");
+      } catch (err) {
+        console.warn("[Review Guesser] Invalid appreviews data-props", err);
+        continue;
+      }
+
+      const options = props?.summary_options;
+      // Steam currently emits filter_options beside summary_options. Keep the
+      // nested lookup too for compatibility with older/experimental markup.
+      const filters = props?.filter_options || options?.filter_options;
+      const positive = Number(filters?.nReviewsPositive);
+      const negative = Number(filters?.nReviewsNegative);
+
+      if (
+        Number.isFinite(positive) &&
+        positive >= 0 &&
+        Number.isFinite(negative) &&
+        negative >= 0
+      ) {
+        return { el, count: Math.trunc(positive + negative) };
+      }
+
+      const globalCount = Number(
+        options?.summaryGlobalNoOutliers?.nReviews
+      );
+      if (Number.isFinite(globalCount) && globalCount >= 0) {
+        return { el, count: Math.trunc(globalCount) };
+      }
+    }
+
+    return null;
   }
 
   function tryGetFromOverallSummary(scope = document) {
@@ -304,6 +367,7 @@
     const scope = document;
 
     const check = () =>
+      tryGetFromAppReviewsProps(scope) ||
       tryGetFromLanguageBreakdown(scope) ||
       tryGetFromOverallSummary(scope) ||
       tryGetFromReviewScoreSummaries(scope) ||
@@ -347,6 +411,7 @@
 
   // Expose
   ns.hideAllSteamReviewCounts = hideAllSteamReviewCounts;
+  ns.tryGetFromAppReviewsProps = tryGetFromAppReviewsProps;
   ns.tryGetFromLanguageBreakdown = tryGetFromLanguageBreakdown;
   ns.tryGetFromOverallSummary = tryGetFromOverallSummary;
   ns.tryGetFromReviewScoreSummaries = tryGetFromReviewScoreSummaries;

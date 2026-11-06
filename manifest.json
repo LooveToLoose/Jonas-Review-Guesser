@@ -1,8 +1,15 @@
 {
   "name": "Jonas Review Guesser",
-  "version": "1.1.0",
+  "version": "2.2.0",
   "manifest_version": 3,
-  "description": "Turns Steam page into a guessing game.",
+  "description": "Guess Steam review counts, score your accuracy, and build streaks.",
+  "action": {
+    "default_title": "Jonas Review Guesser",
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -11,6 +18,7 @@
       "js": [
         "src/siteRules.js",
         "src/utils.js",
+        "src/storage.js",
         "src/pageDetection.js",
         "src/reviewCounts.js",
         "src/guessingGame.js",
@@ -21,7 +29,7 @@
       "run_at": "document_start"
     }
   ],
-  "permissions": [],
+  "permissions": ["storage", "activeTab"],
   "web_accessible_resources": [
     {
       "resources": [

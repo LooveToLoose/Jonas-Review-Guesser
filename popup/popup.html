@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jonas Review Guesser</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Jonas Review Guesser</h1>
+        <label class="switch" title="Enable on Steam pages">
+          <input id="enabled" type="checkbox" /><span></span>
+        </label>
+      </header>
+
+      <section>
+        <h2>Play</h2>
+        <div class="play-actions">
+          <button id="daily" class="daily-button" type="button">
+            <span class="button-label">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M5.5 2.5v3M14.5 2.5v3M3 7.5h14M4.5 4h11A1.5 1.5 0 0 1 17 5.5v10a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 15.5v-10A1.5 1.5 0 0 1 4.5 4Z" />
+              </svg>
+              Daily challenge
+            </span>
+          </button>
+          <div class="run-control">
+            <button id="run" type="button">
+              <span class="button-label">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6V4Z" /></svg>
+                Start run
+              </span>
+            </button>
+            <div class="run-length">
+              <span class="visually-hidden">Run length</span>
+              <select id="round-count" aria-label="Run length">
+                <option value="3">3 rounds</option>
+                <option value="5" selected>5 rounds</option>
+                <option value="10">10 rounds</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <p id="session-state" class="quiet"></p>
+      </section>
+
+      <section class="split-section">
+        <div>
+          <h2>Guess mode</h2>
+          <select id="mode">
+            <option value="typed">Typed</option>
+            <option value="quick">Quick pick · 8s</option>
+            <option value="choice">Six choices</option>
+            <option value="expert">Expert · close calls</option>
+          </select>
+        </div>
+        <div>
+          <h2>Spoilers</h2>
+          <select id="spoiler">
+            <option value="standard">Standard</option>
+            <option value="strict">Strict</option>
+            <option value="brutal">Brutal</option>
+          </select>
+        </div>
+        <div class="pool-row">
+          <h2>Game pool</h2>
+          <select id="pool">
+            <option value="balanced">Balanced</option>
+            <option value="raw">Raw · harder</option>
+          </select>
+        </div>
+      </section>
+
+      <details>
+        <summary>Random filters</summary>
+        <div class="filter-grid">
+          <div class="filter-field"><span>Genre</span><select id="genre">
+            <option value="any">Any</option><option value="action">Action</option>
+            <option value="adventure">Adventure</option><option value="rpg">RPG</option>
+            <option value="strategy">Strategy</option><option value="simulation">Simulation</option>
+            <option value="indie">Indie</option><option value="casual">Casual</option>
+            <option value="racing">Racing</option><option value="sports">Sports</option>
+          </select></div>
+          <div class="filter-field"><span>Release</span><select id="release">
+            <option value="any">Any year</option><option value="recent">Last 3 years</option>
+            <option value="modern">2015 or newer</option><option value="classic">Before 2015</option>
+          </select></div>
+          <div class="filter-field"><span>Price</span><select id="price">
+            <option value="any">Any</option><option value="free">Free</option><option value="paid">Paid</option>
+          </select></div>
+          <div class="filter-field"><span>Reviews</span><select id="reviews">
+            <option value="any">Any</option><option value="under100">Under 100</option>
+            <option value="100to999">100–999</option><option value="1kto10k">1k–10k</option>
+            <option value="over10k">10k+</option>
+          </select></div>
+          <div class="filter-field"><span>Rating</span><select id="rating">
+            <option value="any">Any</option><option value="70">70%+</option>
+            <option value="80">80%+</option><option value="90">90%+</option>
+          </select></div>
+        </div>
+      </details>
+
+      <section>
+        <div class="section-heading"><h2>Lifetime stats</h2><button id="reset" type="button">Reset</button></div>
+        <div class="stats">
+          <div><strong id="rounds">0</strong><span>Rounds</span></div>
+          <div><strong id="average">0</strong><span>Avg score</span></div>
+          <div><strong id="streak">0</strong><span>Streak</span></div>
+          <div><strong id="best">0</strong><span>Best</span></div>
+        </div>
+        <p id="calibration" class="calibration" hidden></p>
+      </section>
+
+      <details id="history-panel">
+        <summary>Recent guesses</summary>
+        <ol id="history"></ol>
+      </details>
+
+      <p id="status" role="status"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
