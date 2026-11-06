@@ -4,6 +4,35 @@
 
 Jonas Review Guesser is a Chrome extension that turns Steam into a review guessing game. It hides the review count (and some other clues) on Steam store pages and asks you to guess the number of reviews instead. On top of that, it adds buttons at the top of the page that take you to completely random games on Steam, giving you a new way to browse the store, step outside your usual bubble, and gradually improve your intuition for how successful different games are.
 
+### Game Modes and Stats
+
+- **Typed** — enter your own estimate. Guesses within 25% keep your streak alive.
+- **Quick Pick** — choose from three possible review counts before the eight-second timer expires.
+- **Six Choices** — the balanced multiple-choice mode.
+- **Expert** — choose between six deliberately close, plausible review counts.
+- Each round awards up to 100 points based on accuracy.
+- Lifetime rounds, average score, current streak, and best streak are stored locally.
+- Use the toolbar popup to switch modes, enable or disable the game, and reset stats.
+
+### Challenges, Sessions, and Hints
+
+- **Today’s challenge** uses a date-seeded set of five games shared by every copy of the extension.
+- **Custom runs** can be 3, 5, or 10 games and use your selected filters.
+- Custom runs can use the curated **Balanced** pool or the broader, more obscure **Raw** pool.
+- Starting a run outside Steam opens a Steam game tab automatically.
+- Reveal price, release year, or genre for a 10-point penalty per hint.
+- Results use logarithmic scoring, so equally sized over- and underestimates are treated consistently.
+- Recent guesses and a calibration report show whether your estimates trend high or low.
+
+### Spoiler Presets and Keyboard Controls
+
+- **Standard** hides review information.
+- **Strict** also hides secondary popularity clues.
+- **Brutal** hides release, developer, tag, genre, and price information.
+- In choice modes, press **1–9** to choose an answer.
+- During an active run, press **N** after a result to open the next game.
+- The Steam-page navigation buttons warn before abandoning an unanswered round or active run.
+
 ![preview image](images/GuessExample.PNG)
 
 ### Random Game Navigation
@@ -21,8 +50,7 @@ Jonas Review Guesser is a Chrome extension that turns Steam into a review guessi
 
 ## Limitations
 
-It is a very simple application with many limitations:
-- **Bug: ** Current version only works when your Steam is set to English.
+It is a very simple application with some limitations:
 - Somewhat hinders your normal Steam browsing experience (you need to manually turn the Plugin off).
 - The database of appIDs is not automatically updated so the newer titles might not be included.
 - Sometimes the extension brings you to a Steam page that is not or no longer available in your region.
@@ -56,10 +84,7 @@ It is not my plan to work on this too much more so if you'd like to see these li
   - The folder that includes `manifest.json`.
 - Confirm that **Jonas Review Guesser** appears in the list of extensions.
 
-### Step 3: Set Steam language to ENGLISH!
-- **Set your language to "English"!** This is crucial for the current version to work.
-
-### Step 4: Verify It Works
+### Step 3: Verify It Works
 
 - Make sure the extension is **enabled** (toggle is on).
 - Open any Steam store page:

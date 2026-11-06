@@ -1,20 +1,22 @@
 /* If you use it elsewhere */
-.ext-hide { display: none !important; }
+.ext-review-guesser-active .ext-hide { display: none !important; }
 
 /* Hide Steam's built-in review summary UI early to avoid spoiler flash */
-.review_score_summaries,
-.user_reviews_summary_row,
-.rating_summary,
-.responsive_reviewdesc,
-.game_review_summary,
-.user_reviews_count,
-.newmodal_reviews_header,
-.apphub_ReviewsHeader,
-.user_reviews_filter_section,
-.viewer_bar,
-.review_ctn,
-.app_reviews_count,
-.review_summary_count {
+.ext-review-guesser-active :is(
+  .review_score_summaries,
+  .user_reviews_summary_row,
+  .rating_summary,
+  .responsive_reviewdesc,
+  .game_review_summary,
+  .user_reviews_count,
+  .newmodal_reviews_header,
+  .apphub_ReviewsHeader,
+  .user_reviews_filter_section,
+  .viewer_bar,
+  .review_ctn,
+  .app_reviews_count,
+  .review_summary_count
+) {
   visibility: hidden !important;
 }
 
@@ -32,20 +34,26 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
   margin: 8px 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
 .ext-steam-guess button {
-  padding: 10px 12px;
-  border: 1px solid rgba(255,255,255,.25);
-  border-radius: 10px;
-  background: rgba(255,255,255,.08);
+  padding: 9px 11px;
+  border: 1px solid #455564;
+  border-radius: 3px;
+  background: #263746;
   cursor: pointer;
   font: 600 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: #fff;               /* always white text */
-  transition: transform .06s ease, background .15s ease, border-color .15s ease;
+  transition: background .12s ease, border-color .12s ease;
 }
 
-.ext-steam-guess button:hover { transform: translateY(-1px); }
+.ext-steam-guess button:hover { background: #30495e; border-color: #61798c; }
+.ext-steam-guess button:focus-visible,
+.ext-steam-guess input:focus-visible {
+  outline: 2px solid #66c0f4;
+  outline-offset: 2px;
+}
 
 /* Keep buttons fully visible even when disabled */
 .ext-steam-guess button[disabled] { opacity: 1; }
@@ -68,6 +76,213 @@
   font-size: 12px;
 }
 
+.ext-steam-guess.ext-mode-typed {
+  display: block;
+  padding: 12px 12px 11px;
+  border: 1px solid #344654;
+  border-left: 3px solid #66c0f4;
+  border-radius: 2px;
+  background: #17232d;
+}
+
+.ext-prompt {
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.ext-guess-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.ext-guess-form input {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid #4a5965;
+  border-radius: 2px;
+  background: #0e171e;
+  color: #fff;
+  font: 600 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.ext-guess-form input::placeholder { color: rgba(255,255,255,.46); }
+.ext-guess-form button { background: #1a7faa; border-color: #4ba8cf; }
+.ext-guess-form button:hover { background: #218ebc; border-color: #66c0f4; }
+
+.ext-validation {
+  min-height: 18px;
+  margin-top: 5px;
+  color: #ffb4b4;
+  font-size: 11px;
+}
+
+.ext-mode-typed .ext-subtle { margin-top: 2px; }
+
+.ext-hints {
+  margin: 2px 0 7px;
+  color: #91a4b2;
+  font-size: 10px;
+}
+.ext-hints > span { display: block; margin-bottom: 5px; }
+.ext-hints > div { display: flex; flex-wrap: wrap; gap: 5px; }
+.ext-hints button {
+  padding: 5px 7px;
+  border-color: #3d4d59;
+  background: transparent;
+  color: #b8c7d1;
+  font-size: 10px;
+  font-weight: 500;
+}
+.ext-hints button.is-revealed { border-color: #597080; color: #fff; }
+
+.ext-session-progress {
+  grid-column: 1 / -1;
+  margin-bottom: 7px;
+  color: #78bfe7;
+  font-size: 10px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.ext-session-next {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 7px;
+  background: #1a7faa !important;
+  border-color: #4ba8cf !important;
+}
+.ext-session-next.is-inline {
+  grid-column: 2;
+  grid-row: 3;
+  align-self: stretch;
+  width: auto;
+  min-width: 92px;
+  margin: 0;
+  padding: 6px 10px;
+  font-size: 10px;
+}
+
+.ext-session-summary {
+  grid-column: 1 / -1;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid #3a4a56;
+}
+.ext-session-summary strong,
+.ext-session-summary span { display: block; }
+.ext-session-summary strong { color: #fff; font-size: 13px; }
+.ext-session-summary span { margin-top: 2px; color: #8fc5e4; font-size: 11px; }
+.ext-session-summary ol { margin: 7px 0 0; padding-left: 18px; color: #b9cbd8; font-size: 10px; }
+.ext-session-summary li { padding: 2px 0; }
+
+.ext-result {
+  position: relative;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 12px;
+  margin-top: 7px;
+  padding: 9px 0 0;
+  border: 0;
+  border-top: 1px solid #3a4a56;
+  border-radius: 0;
+  background: transparent;
+}
+
+.ext-result-actual { grid-column: 1; color: #fff; font-size: 13px; }
+.ext-result-detail { grid-column: 1; display: flex; flex-wrap: wrap; gap: 5px; }
+.ext-result-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 21px;
+  padding: 2px 7px;
+  border: 1px solid #40515e;
+  border-radius: 11px;
+  background: #1c2933;
+  color: #c6d2da;
+  font-size: 10px;
+  font-weight: 600;
+}
+.ext-result-pill.is-high { border-color: #745250; color: #e8aaa4; }
+.ext-result-pill.is-low { border-color: #665b3d; color: #e7ca80; }
+.ext-result-pill.is-exact { border-color: #357349; color: #83dc9a; }
+.ext-result-pill.is-timeout { border-color: #74434b; color: #ef9aa5; }
+.ext-result-pill.is-error { color: #94a7b4; font-weight: 500; }
+.ext-score-pill {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 6px 10px;
+  border: 1px solid #3f6074;
+  border-radius: 3px;
+  background: #183044;
+  color: #8ed5ff;
+  font-size: 16px;
+}
+.ext-result.score-high .ext-score-pill { border-color: #347348; background: #173b25; color: #85e19c; }
+.ext-result.score-mid .ext-score-pill { border-color: #756638; background: #3a3218; color: #ead17c; }
+.ext-result.score-low .ext-score-pill { border-color: #74434b; background: #3b2025; color: #f0a0aa; }
+
+.ext-round-stats {
+  grid-column: 1;
+  grid-row: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.ext-stat-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 3px 7px;
+  border: 1px solid #384954;
+  border-radius: 10px;
+  background: #17232b;
+  color: #9fb0ba;
+}
+.ext-stat-pill small { font-size: 8px; text-transform: uppercase; letter-spacing: .04em; }
+.ext-stat-pill strong { color: #dce7ed; font-size: 10px; }
+.ext-stat-pill.is-active { border-color: #376f53; }
+.ext-stat-pill.is-active strong { color: #7ed8a0; }
+.ext-stat-pill.is-good strong { color: #85caef; }
+
+.ext-choice-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 1px;
+}
+.ext-choice-prompt { color: #fff; font-size: 14px; font-weight: 700; }
+.ext-choice-tag {
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border: 1px solid #486274;
+  border-radius: 10px;
+  color: #9acdeb;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.ext-timer { min-width: 35px; text-align: center; }
+.ext-timer.is-urgent { border-color: #8a4650; background: #402127; color: #ffacb4; }
+.ext-choice-context {
+  grid-column: 1 / -1;
+  color: #b8c6cf;
+  font-size: 11px;
+  font-weight: 550;
+}
+
 /* Fallback message styling */
 .ext-steam-guess .ext-error {
   color: #ffb4b4;
@@ -77,7 +292,7 @@
 
 
 /* Mask everything in the reviews container except our widget */
-.ext-mask-reviews > *:not(.ext-steam-guess) {
+.ext-review-guesser-active .ext-mask-reviews > *:not(.ext-steam-guess) {
   display: none !important;
 }
 
@@ -92,4 +307,87 @@
 /* Small gap between our two Next Game buttons */
 .ext-next-game + .ext-next-game {
   margin-left: 8px;
+}
+.ext-next-row { position: relative; display: flex; align-items: stretch; gap: 6px; margin-top: 8px; }
+.ext-next-row .ext-next-game + .ext-next-game { margin-left: 0; }
+.ext-nav-action { position: relative; display: flex; }
+.ext-session-total {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 58px;
+  padding: 3px 8px;
+  border-left: 2px solid #66c0f4;
+  background: rgba(17, 29, 39, .8);
+  color: #8da2b1;
+  font-size: 8px;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.ext-session-total[hidden] { display: none; }
+.ext-session-total strong { margin-top: 2px; color: #fff; font-size: 11px; letter-spacing: 0; text-transform: none; }
+.ext-leave-confirm {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 7px);
+  left: 50%;
+  width: 220px;
+  padding: 10px;
+  transform: translateX(-50%);
+  border: 1px solid #536979;
+  border-radius: 3px;
+  background: #121e27;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, .45);
+  color: #dce6ed;
+}
+.ext-leave-confirm::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translateX(-50%) rotate(45deg);
+  border-top: 1px solid #536979;
+  border-left: 1px solid #536979;
+  background: #121e27;
+}
+.ext-leave-confirm strong,
+.ext-leave-confirm span { display: block; }
+.ext-leave-confirm strong { color: #fff; font-size: 12px; }
+.ext-leave-confirm span { margin-top: 3px; color: #9fb0bb; font-size: 10px; line-height: 1.35; }
+.ext-leave-confirm > div { display: flex; justify-content: flex-end; gap: 5px; margin-top: 9px; }
+.ext-leave-confirm button {
+  padding: 5px 8px;
+  border: 1px solid #455967;
+  border-radius: 2px;
+  background: #1d2d38;
+  color: #dce6ed;
+  cursor: pointer;
+  font-size: 10px;
+}
+.ext-leave-confirm button.is-danger { border-color: #87505a; background: #4a252c; color: #ffc0c7; }
+.ext-menu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  min-height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: rgba(103, 193, 245, .18);
+  color: #67c1f5;
+  cursor: pointer;
+}
+.ext-menu-button:hover { background: rgba(103, 193, 245, .3); color: #fff; }
+.ext-menu-button:focus-visible { outline: 2px solid #67c1f5; outline-offset: 2px; }
+.ext-menu-button svg {
+  width: 17px;
+  height: 17px;
+  fill: #17232d;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.5;
 }
